@@ -88,7 +88,6 @@
 
         function retrieve(className) {
           var value =  $.cookie(boardCookie);
-          console.log(value); 
           var board = JSON.parse(value);
           populate(className, board);
         }
@@ -166,6 +165,12 @@
     <h1>Nerdfighter Bingo</h1>
     <input type="button" id="reset" value="New board" />
     <div class="board"></div>
-    <p>Version 0.0.1</p>
+    <p>Version 0.0.2</p>
+    <h5>Version history</h5>
+    <ul>
+      <li>0.0.2 -- script remembers your board until reset for a year</li>
+      <li>0.0.1 -- script creates board</li>
+    </ul>
+      <p> &copy; 2014 Lame Games Studios. All rights reserved <p>
   </body>
 </html>
