@@ -23,6 +23,7 @@
     </style>
 
     <script src="jquery-2.0.3.js" ></script>  
+    <Script src="carhartl-jquery-cookie-3caf209/jquery.cookie.js"></script>
     <script src="underscore.js" ></script>  
     <script>
      /* data */
@@ -64,19 +65,49 @@
 
      /* module */
      var card = (function($,_){
+        var boardCookie = "board";
         var c = {};
 
-        c.create = function(class_name, data){
-          var selector = "." + class_name;
-          var selected = select(data, 12 , "DFTBA");
-          var t = table(selected);
-          $(selector).html(t);
+        c.load = function(className, data){
+          (boardExists()) ? retrieve(className) : create(className, data);
+        }
+
+        c.create = function(className, data){
+          create(className, data);
+        }
+
+        function boardExists(){
+          var result = false;
+          var board = $.cookie(boardCookie);
+
+          if (board) {
+            result = true;
+          }
+          return result;
+        }
+
+        function retrieve(className) {
+          var value =  $.cookie(boardCookie);
+          console.log(value); 
+          var board = JSON.parse(value);
+          populate(className, board);
+        }
+
+        function create(className, data){
+          var board = select(data, 12 , "DFTBA");
+          $.cookie(boardCookie, JSON.stringify(board), {expires: 365});
+          populate(className, board);
         };
+
+        function populate(className, data){
+          var selector = "." + className;
+          var t = table(data);
+          $(selector).html(t);
+        }
 
         function select(data, centerPosition, centerValue){
           var result = _.shuffle(data).splice(0, 24);  
           result.splice(centerPosition, 0, centerValue); 
-          console.log(result);
 
           return result;
         }
@@ -90,7 +121,6 @@
 
           return result;
         }
-
 
         function td(data, className){
           return "<td class='" + className + "'>" + data +  "</td>";
@@ -123,13 +153,18 @@
 
      /* start */ 
      $(document).ready(function(){
-         card.create("board", content);  
+         card.load("board", content);  
+
+         $("#reset").click(function(){
+            card.create("board", content); 
+         });
      });
 
     </script>
   </head>
   <body>
     <h1>Nerdfighter Bingo</h1>
+    <input type="button" id="reset" value="New board" />
     <div class="board"></div>
     <p>Version 0.0.1</p>
   </body>
