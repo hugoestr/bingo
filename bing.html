@@ -1,0 +1,136 @@
+<html>
+  <head>
+    <style>
+      
+      table { 
+        border-style: solid;
+        font-size: 1em;     
+        width: 800px;
+        height: 500px;
+      }  
+      th {color: gray;}
+      tr {border-style: solid; }
+      td {
+          border-style: solid;
+          text-align: center;
+          width: 160px;
+          height: 100px;
+        }
+        
+       .center { background: #CCCCFF ;}
+
+      /* th { border-style: solid;} */
+    </style>
+
+    <script src="jquery-2.0.3.js" ></script>  
+    <script src="underscore.js" ></script>  
+    <script>
+     /* data */
+     var data = ["hello", "there", "babo", "new", "gago", "this is a lot longer"];
+     var content = [
+          "'This group should be called....'",
+          "Mislabelling a bully",
+          "Playing the 'topic' card",
+          "Leaving a thread.  JUST KIDDING!",
+          "What would John and Hank think?",
+          "Unnecessarily tagging someone just to bitch them out",
+          "THAT WASN'T AD HOMINEM!",
+          "'I never actually say X!'",
+          "Bully denies being a bully in a fit of righteous indignation",
+          "Someone forgot to be awesome",
+          "Actual vlogbrothers reference",
+          "Overdone political drum solo",
+          "Post lamenting all the mean posts",
+          "saying who can and can't be a Nerdfighter",
+          "Mislabelling a troll",
+          "'SAFE SPACE'",
+          "Grammar correction",
+          "TRIGGER WARNING",
+          "Soliciting pity",
+          "Accusing someone of following you from thread to thread",
+          "'your opinion is WRONG!'",
+          "Doctor Who post",
+          "Flounce post!",
+          "This is my FB wall, right?",
+          "Arguing the definition of an -ism",
+          "Harry Potter post",
+          "passive agressive smiley face",
+          "'I thought this was ADULT Nerdfighters'",
+          "I have a mental illness!",
+          "Someone posting TL;DR on a well thought out statement, responding with something pithy",
+          "You're increasing world suck"];
+
+
+
+     /* module */
+     var card = (function($,_){
+        var c = {};
+
+        c.create = function(class_name, data){
+          var selector = "." + class_name;
+          var selected = select(data, 12 , "DFTBA");
+          var t = table(selected);
+          $(selector).html(t);
+        };
+
+        function select(data, centerPosition, centerValue){
+          var result = _.shuffle(data).splice(0, 24);  
+          result.splice(centerPosition, 0, centerValue); 
+          console.log(result);
+
+          return result;
+        }
+
+        function table(data){
+          var result = "<table border='1'>";
+
+          result += "<tr><th>D</th><th>F</th><th>T</th><th>B</th><th>A</th></tr>";
+          result += grid(data);
+          result += "</table>";
+
+          return result;
+        }
+
+
+        function td(data, className){
+          return "<td class='" + className + "'>" + data +  "</td>";
+        }
+
+        function grid(data){
+          var result = "";
+          var count = 0;
+          
+          for (var i = 0; i < data.length; i++){
+            if (count % 5 == 0) {
+              if (result != ""){
+                result += "</tr>";
+              }
+              result += "<tr>";
+              count  = 0;
+            }
+            
+            result += (i == 12) ? td(data[i], "center") : td(data[i]);
+            count++;
+          }
+
+          result += "</tr>";
+
+          return result;
+        }
+
+        return c;    
+     }($,_));  
+
+     /* start */ 
+     $(document).ready(function(){
+         card.create("board", content);  
+     });
+
+    </script>
+  </head>
+  <body>
+    <h1>Nerdfighter Bingo</h1>
+    <div class="board"></div>
+    <p>Version 0.0.1</p>
+  </body>
+</html>
