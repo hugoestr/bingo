@@ -17,7 +17,11 @@
           height: 100px;
         }
         
-       .center { background: #CCCCFF ;}
+        .center { 
+          background: #CCCCFF;
+          border-color: orange;
+        }
+       .selected { background: #CCCCFF ;}
 
       /* th { border-style: solid;} */
     </style>
@@ -138,7 +142,7 @@
               count  = 0;
             }
             
-            result += (i == 12) ? td(data[i], "center") : td(data[i]);
+            result += (i == 12) ? td(data[i], "center") : td(data[i], "cell");
             count++;
           }
 
@@ -157,6 +161,15 @@
          $("#reset").click(function(){
             card.create("board", content); 
          });
+
+         $("table").on("click", ".cell", function(){
+           var classes = _.flatten([$(this).attr("class").split(" ")]);
+           if (_.contains(classes, "selected")) {
+              $(this).removeClass("selected");    
+           } else {
+              $(this).addClass("selected");    
+           }
+         });
      });
 
     </script>
@@ -168,6 +181,7 @@
     <p>Version 0.0.2</p>
     <h5>Version history</h5>
     <ul>
+      <li>0.0.3 -- colors cells when clicked</li>
       <li>0.0.2 -- script remembers your board until reset for a year</li>
       <li>0.0.1 -- script creates board</li>
     </ul>
