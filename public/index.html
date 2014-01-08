@@ -27,7 +27,8 @@
 
       /* th { border-style: solid;} */
     </style>
-
+    
+    <script src="/socket.io/socket.io.js"></script>
     <script src="libs/jquery-2.0.3.js" ></script>  
     <Script src="libs/carhartl-jquery-cookie-3caf209/jquery.cookie.js"></script>
     <script src="libs/underscore.js" ></script>  
@@ -259,8 +260,15 @@
               positions.add(position); 
            }
          });
-
+         
      });
+
+var socket = io.connect('http://localhost');
+  socket.on('news', function (data) {
+    console.log(data);
+    socket.emit('my other event', { my: 'data' });
+  });
+     
 
     </script>
   </head>
