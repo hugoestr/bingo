@@ -271,7 +271,7 @@
     <p>Version 0.0.2</p>
     <h5>Version history</h5>
     <ul>
-      <li>0.0.3 -- colors cells when clicked; added clear board button; remembers selection on each refresh</li>
+      <li>0.0.3 -- colors cells when clicked; added clear board button; remembers selection on each refresh; remembers selected cells for 2 weeks</li>
       <li>0.0.2 -- script remembers your board until reset for a year</li>
       <li>0.0.1 -- script creates board</li>
     </ul>
