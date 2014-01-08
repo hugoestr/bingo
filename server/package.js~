@@ -1,0 +1,12 @@
+{
+  "name": "bingo",
+  "version": "0.0.1",
+  "description": "bingo game to play over the internet",
+  "private": true,
+  "dependencies": {
+    "express": "latest",
+    "socket.io": "latest"
+  },
+  "author" : "Lame Games Studios"
+}
+
