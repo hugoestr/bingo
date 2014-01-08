@@ -74,6 +74,12 @@
      var positions = (function($,_) { 
        var p = {};
 
+
+       p.clear = function() {
+          setCookie([]);
+       }
+
+
        p.remove = function(position){
           removePosition(position);
        }
@@ -103,14 +109,18 @@
             var positions = getPositions();
             var newPositions = _.without(positions, position);
 
-            $.cookie("selectedCells", JSON.stringify(newPositions));
+            setCookie(newPositions);
        }
        
        function addPosition(position){
-            var positions = getPositions();
-            var newPositions = _.uniq(positions.push(position));
+         var positions = getPositions();
+         positions.push(position);
+         var newPositions = _.uniq(positions);
+          setCookie(newPositions);
+       }
 
-            $.cookie("selectedCells", JSON.stringify(newPositions));
+       function setCookie(list){
+         $.cookie("selectedCells", JSON.stringify(list.sort()), {expires: 30});
        }
 
        return p;
@@ -156,7 +166,7 @@
 
         function populate(className, data, selected){
           var selector = "." + className;
-          var t = table(data);
+          var t = table(data, selected);
           $(selector).html(t);
         }
 
@@ -183,6 +193,16 @@
             data +  "</td>";
         }
 
+        function classes(main, selected, index){
+          var result = main;
+          
+          if (_.contains(selected, index.toString())){
+             result += " selected";
+          }
+
+          return result;
+        }
+
         function grid(data, selected){
           var result = "";
           var count = 0;
@@ -196,7 +216,9 @@
               count  = 0;
             }
             
-            result += (i == 12) ? td(data[i], "center") : td(data[i], i);
+            result += (i == 12) ? 
+                      td(data[i], "center") :
+                      td(data[i], classes("cell", selected, i), i);
             count++;
           }
 
@@ -218,6 +240,7 @@
 
          $("#clear").click(function(){
             $(".cell").removeClass("selected"); 
+            positions.clear();
          });
 
          $("table").on("click", ".cell", function(){
@@ -248,7 +271,7 @@
     <p>Version 0.0.2</p>
     <h5>Version history</h5>
     <ul>
-      <li>0.0.3 -- colors cells when clicked; added clear board button; remembers selection on each refresh</li>
+      <li>0.0.3 -- colors cells when clicked; added clear board button; remembers selection on each refresh; remembers selected cells for 2 weeks</li>
       <li>0.0.2 -- script remembers your board until reset for a year</li>
       <li>0.0.1 -- script creates board</li>
     </ul>
