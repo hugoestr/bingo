@@ -1,3 +1,5 @@
+<!doctype html>
+
 <html>
   <head>
     <style>
@@ -17,7 +19,11 @@
           height: 100px;
         }
         
-       .center { background: #CCCCFF ;}
+        .center { 
+          background: #CCCCFF;
+          border-color: orange;
+        }
+       .selected { background: #CCCCFF ;}
 
       /* th { border-style: solid;} */
     </style>
@@ -63,8 +69,54 @@
 
 
 
-     /* module */
-     var card = (function($,_){
+     /* modules */
+
+     var positions = (function($,_) { 
+       var p = {};
+
+       p.remove = function(position){
+          removePosition(position);
+       }
+
+       p.add = function(position){
+          addPosition(position);
+       }
+
+       p.get = function(){
+          return getPositions(); 
+       }
+
+
+       function getPositions(){
+          var result = [];
+          
+          var value = $.cookie("selectedCells");
+
+          if (value != undefined){
+            result  = JSON.parse(value);
+          }
+
+          return result;
+       }
+
+       function removePosition(position){
+            var positions = getPositions();
+            var newPositions = _.without(positions, position);
+
+            $.cookie("selectedCells", JSON.stringify(newPositions));
+       }
+       
+       function addPosition(position){
+            var positions = getPositions();
+            var newPositions = _.uniq(positions.push(position));
+
+            $.cookie("selectedCells", JSON.stringify(newPositions));
+       }
+
+       return p;
+   }($,_));
+
+     var card = (function($, _, positions){
         var boardCookie = "board";
         var c = {};
 
@@ -89,16 +141,20 @@
         function retrieve(className) {
           var value =  $.cookie(boardCookie);
           var board = JSON.parse(value);
-          populate(className, board);
+          var selected = positions.get();
+          
+          populate(className, board, selected);
         }
 
         function create(className, data){
           var board = select(data, 12 , "DFTBA");
           $.cookie(boardCookie, JSON.stringify(board), {expires: 365});
-          populate(className, board);
+          var selected = positions.get();
+          
+          populate(className, board, selected);
         };
 
-        function populate(className, data){
+        function populate(className, data, selected){
           var selector = "." + className;
           var t = table(data);
           $(selector).html(t);
@@ -111,21 +167,23 @@
           return result;
         }
 
-        function table(data){
+        function table(data, selected){
           var result = "<table border='1'>";
 
           result += "<tr><th>D</th><th>F</th><th>T</th><th>B</th><th>A</th></tr>";
-          result += grid(data);
+          result += grid(data, selected);
           result += "</table>";
 
           return result;
         }
 
-        function td(data, className){
-          return "<td class='" + className + "'>" + data +  "</td>";
+        function td(data, className, position){
+          return "<td class='" + className + 
+            "' data-position='" + position +  "' >" + 
+            data +  "</td>";
         }
 
-        function grid(data){
+        function grid(data, selected){
           var result = "";
           var count = 0;
           
@@ -138,7 +196,7 @@
               count  = 0;
             }
             
-            result += (i == 12) ? td(data[i], "center") : td(data[i]);
+            result += (i == 12) ? td(data[i], "center") : td(data[i], i);
             count++;
           }
 
@@ -148,7 +206,7 @@
         }
 
         return c;    
-     }($,_));  
+     }($,_, positions));  
 
      /* start */ 
      $(document).ready(function(){
@@ -157,6 +215,27 @@
          $("#reset").click(function(){
             card.create("board", content); 
          });
+
+         $("#clear").click(function(){
+            $(".cell").removeClass("selected"); 
+         });
+
+         $("table").on("click", ".cell", function(){
+           var classes = _.flatten([$(this).attr("class").split(" ")]);
+           
+           if (_.contains(classes, "selected")) {
+              $(this).removeClass("selected");    
+
+              var position = $(this).attr("data-position");
+              positions.remove(position); 
+           } else {
+              $(this).addClass("selected");    
+              
+              var position = $(this).attr("data-position");
+              positions.add(position); 
+           }
+         });
+
      });
 
     </script>
@@ -164,11 +243,12 @@
   <body>
     <h1>Nerdfighter Bingo</h1>
     <input type="button" id="reset" value="New board" />
+    <input type="button" id="clear" value="Clear board" />
     <div class="board"></div>
     <p>Version 0.0.2</p>
     <h5>Version history</h5>
     <ul>
-      <li>0.0.3 -- when you click, it marks the spot</li>
+      <li>0.0.3 -- colors cells when clicked; added clear board button; remembers selection on each refresh</li>
       <li>0.0.2 -- script remembers your board until reset for a year</li>
       <li>0.0.1 -- script creates board</li>
     </ul>
