@@ -29,9 +29,9 @@
     </style>
     
     <script src="/socket.io/socket.io.js"></script>
-    <script src="libs/jquery-2.0.3.js" ></script>  
-    <Script src="libs/carhartl-jquery-cookie-3caf209/jquery.cookie.js"></script>
-    <script src="libs/underscore.js" ></script>  
+    <script src="public/libs/jquery-2.0.3.js" ></script>  
+    <Script src="public/libs/carhartl-jquery-cookie-3caf209/jquery.cookie.js"></script>
+    <script src="public/libs/underscore.js" ></script>  
 
     <script>
      /* data */
@@ -72,6 +72,8 @@
 
 
      /* modules */
+
+     var socket = io.connect('http://localhost');
 
      var positions = (function($,_) { 
        var p = {};
@@ -260,13 +262,15 @@
               positions.add(position); 
            }
          });
+
+         $("#won").click(function(){
+           socket.emit("winning", {user: "hugo"});
+         });
          
      });
 
-var socket = io.connect('http://localhost');
   socket.on('news', function (data) {
     console.log(data);
-    socket.emit('my other event', { my: 'data' });
   });
      
 
@@ -276,10 +280,12 @@ var socket = io.connect('http://localhost');
     <h1>Nerdfighter Bingo</h1>
     <input type="button" id="reset" value="New board" />
     <input type="button" id="clear" value="Clear board" />
+    <input type="button" id="won" value="I won!" />
     <div class="board"></div>
     <p>Version 0.0.2</p>
     <h5>Version history</h5>
     <ul>
+      <li>0.0.4 -- added button to communicate wins</li> 
       <li>0.0.3 -- colors cells when clicked; added clear board button; remembers selection on each refresh; remembers selected cells for 2 weeks</li>
       <li>0.0.2 -- script remembers your board until reset for a year</li>
       <li>0.0.1 -- script creates board</li>
