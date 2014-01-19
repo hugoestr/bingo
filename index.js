@@ -14,8 +14,20 @@ app.get('/', function (req, res) {
 
 io.sockets.on('connection', function (socket) {
   socket.emit('news', { hello: 'world' });
-  socket.on('winning', function (data) {
-    socket.emit("news", { status: "game over!" + data.user + " won" });
+  
+  socket.on('game_status', function (data) {
+    
+    switch(data.action){
+      case "start" :
+        socket.emit("game_status", {status: "start"});
+        break;
+      case "won":
+        socket.emit("game_status", {status: "won", player: data.player});
+        break;
+      default:
+        break;
+    }
   });
+
 });
 

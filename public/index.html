@@ -73,7 +73,6 @@
 
      /* modules */
 
-     var socket = io.connect('http://localhost');
 
      var positions = (function($,_) { 
        var p = {};
@@ -234,7 +233,7 @@
         return c;    
      }($,_, positions));  
 
-     /* start */ 
+        /* start */ 
      $(document).ready(function(){
          card.load("board", content);  
 
@@ -263,16 +262,40 @@
            }
          });
 
+         $("#start").click(function(){
+          //  $("#status").html("playing game."); 
+            socket.emit("game_status", {action: "start"});
+         });
+
          $("#won").click(function(){
-           socket.emit("winning", {user: "hugo"});
+         //  $("#status").html("game over."); 
+           socket.emit("game_status", { action: "won", player: "hugo"});
          });
          
      });
+ 
+    /* socket.io */ 
+       var socket = io.connect('http://localhost');
+       
+       socket.on('news', function (data) {
+          console.log(data);
+        });
 
-  socket.on('news', function (data) {
-    console.log(data);
-  });
-     
+        socket.on('game_status', function (data) {
+          console.log(data);
+          
+          if (data.status == "start"){
+            $("#status").html("playing game."); 
+
+            $(".cell").removeClass("selected"); 
+            positions.clear();
+          }
+          
+          if (data.status == "won"){
+            $("#status").html("Game over. " + data.player + " won"); 
+          }
+        });
+
 
     </script>
   </head>
@@ -281,11 +304,12 @@
     <input type="button" id="reset" value="New board" />
     <input type="button" id="clear" value="Clear board" />
     <input type="button" id="won" value="I won!" />
+    <input type="button" id="start" value="new game" />
+    <span id="status"></span>
     <div class="board"></div>
-    <p>Version 0.0.2</p>
     <h5>Version history</h5>
     <ul>
-      <li>0.0.4 -- added button to communicate wins</li> 
+      <li>0.0.4 -- added button to communicate wins; added game status; added new game button.</li> 
       <li>0.0.3 -- colors cells when clicked; added clear board button; remembers selection on each refresh; remembers selected cells for 2 weeks</li>
       <li>0.0.2 -- script remembers your board until reset for a year</li>
       <li>0.0.1 -- script creates board</li>
