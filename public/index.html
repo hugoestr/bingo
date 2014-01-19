@@ -269,7 +269,8 @@
 
          $("#won").click(function(){
          //  $("#status").html("game over."); 
-           socket.emit("game_status", { action: "won", player: "hugo"});
+           var player = $("#player").val();
+           socket.emit("game_status", { action: "won", 'player': player});
          });
          
      });
@@ -301,6 +302,7 @@
   </head>
   <body>
     <h1>Nerdfighter Bingo</h1>
+    <input type="text" id="player" /> Player name <br />
     <input type="button" id="reset" value="New board" />
     <input type="button" id="clear" value="Clear board" />
     <input type="button" id="won" value="I won!" />
@@ -309,7 +311,7 @@
     <div class="board"></div>
     <h5>Version history</h5>
     <ul>
-      <li>0.0.4 -- added button to communicate wins; added game status; added new game button.</li> 
+      <li>0.0.4 -- added button to communicate wins; added game status; added new game button. Player name added.</li> 
       <li>0.0.3 -- colors cells when clicked; added clear board button; remembers selection on each refresh; remembers selected cells for 2 weeks</li>
       <li>0.0.2 -- script remembers your board until reset for a year</li>
       <li>0.0.1 -- script creates board</li>
