@@ -19,7 +19,7 @@ io.sockets.on('connection', function (socket) {
     
     switch(data.action){
       case "start" :
-        socket.emit("game_status", {status: "start"});
+        socket.emit("game_status", {status: "start", 'link' : data.link});
         break;
       case "won":
         socket.emit("game_status", {status: "won", player: data.player});

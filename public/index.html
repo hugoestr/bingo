@@ -33,9 +33,9 @@
     <Script src="public/libs/carhartl-jquery-cookie-3caf209/jquery.cookie.js"></script>
     <script src="public/libs/underscore.js" ></script> 
 
-    <script src="public/libs/data.js" ></script> 
-    <script src="public/libs/positions.js" ></script> 
-    <script src="public/libs/cards.js" ></script> 
+    <script src="public/modules/data.js" ></script> 
+    <script src="public/modules/positions.js" ></script> 
+    <script src="public/modules/cards.js" ></script> 
   
   <script>
      /* data */
@@ -72,12 +72,16 @@
          });
 
          $("#start").click(function(){
-          //  $("#status").html("playing game."); 
-            socket.emit("game_status", {action: "start"});
+           var link = $("#link").val();
+           if (link){
+              socket.emit("game_status", {action: "start", "link" : link});
+           } else {
+              alert("Enter a link to start a game");
+            }
+            
          });
 
          $("#won").click(function(){
-         //  $("#status").html("game over."); 
            var player = $("#player").val();
            socket.emit("game_status", { action: "won", 'player': player});
          });
@@ -95,7 +99,7 @@
           console.log(data);
           
           if (data.status == "start"){
-            $("#status").html("playing game."); 
+            $("#status").html("<a target='_blank' href='" + data.link + "'>Game on!</a>"); 
 
             $(".cell").removeClass("selected"); 
             positions.clear();
@@ -111,11 +115,11 @@
   </head>
   <body>
     <h1>Nerdfighter Bingo</h1>
-    <input type="text" id="player" /> Player name <br />
+    <input type="text" id="player" placeholder="player's name" /> <br />
     <input type="button" id="reset" value="New board" />
     <input type="button" id="clear" value="Clear board" />
     <input type="button" id="won" value="I won!" />
-    <input type="text" id="link" placeholder="enter a link to thread to start new game" />
+    <input type="text" id="link" placeholder="Link to status" />
     <input type="button" id="start" value="new game" />
     <span id="status"></span>
     <div class="board"></div>
