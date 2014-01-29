@@ -25,6 +25,16 @@
         }
        .selected { background: #CCCCFF ;}
 
+       .chat {
+         width: 40px;
+         height: 150px;
+       }
+       .chat-log {
+         width: 100%;
+         height: 110px;
+       }
+       .chat-prompt {width: 100%;}
+
       /* th { border-style: solid;} */
     </style>
     
@@ -110,6 +120,16 @@
           }
         });
 
+        /* chat UI*/
+        chat = (function($){
+          var c = {};
+
+          c.populate = function(){
+           return result; 
+          }
+
+         return c; 
+        })($);
 
     </script>
   </head>
@@ -122,7 +142,12 @@
     <input type="text" id="link" placeholder="Link to status" />
     <input type="button" id="start" value="new game" />
     <span id="status"></span>
-    <div class="chat"></div>
+    <div class="chat">
+      <form class="chat-ui">
+        <textarea class="chat-log" ></textarea><br />
+        <input type="text" class="chat-prompt" />
+      </form>
+    </div>
     <div class="board"></div>
     <h5>Version history</h5>
     <ul>
