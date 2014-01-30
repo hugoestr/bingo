@@ -26,7 +26,7 @@
        .selected { background: #CCCCFF ;}
 
        .chat {
-         width: 40px;
+         width: 400px;
          height: 150px;
        }
        .chat-log {
@@ -95,6 +95,24 @@
            var player = $("#player").val();
            socket.emit("game_status", { action: "won", 'player': player});
          });
+
+         /* chat */
+         function erase(element){
+          $(element).val('');
+         }
+
+         function chat(data){
+           var player = $("#player").val();
+           socket.emit("chat", {'player': player, 'content': data});
+         }
+
+         $(".chat-prompt").keypress(function(event){
+           if (event.which == 13){
+             chat($(this).val());
+             erase($(this));
+           } 
+           return event.which != 13;
+         });
          
      });
  
@@ -103,6 +121,12 @@
        
        socket.on('news', function (data) {
           console.log(data);
+        });
+
+        socket.on('chat', function(data){
+           var content = $(".chat-log").html();
+           $(".chat-log").html(content + '\n' + data.player + '> '   + data.content);
+           $('.chat-log').scrollTop($('.chat-log')[0].scrollHeight);
         });
 
         socket.on('game_status', function (data) {
@@ -144,7 +168,7 @@
     <span id="status"></span>
     <div class="chat">
       <form class="chat-ui">
-        <textarea class="chat-log" ></textarea><br />
+        <textarea class="chat-log" readonly="readonly" ></textarea><br />
         <input type="text" class="chat-prompt" />
       </form>
     </div>

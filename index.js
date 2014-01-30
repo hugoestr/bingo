@@ -14,6 +14,10 @@ app.get('/', function (req, res) {
 
 io.sockets.on('connection', function (socket) {
   socket.emit('news', { hello: 'world' });
+
+  socket.on("chat", function(data){
+    socket.emit("chat", { player: data.player ,content: data.content}); 
+  });
   
   socket.on('game_status', function (data) {
     
